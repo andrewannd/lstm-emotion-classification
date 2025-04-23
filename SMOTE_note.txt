@@ -1,0 +1,39 @@
+1. SMOTE assumes tabular (continuous) feature space
+SMOTE generates synthetic samples by interpolating between real samples.
+
+That works great for continuous numeric features, but in your case:
+
+You’re using token IDs (discrete integers).
+
+Interpolating between token IDs doesn't produce semantically meaningful or valid sentences.
+
+Your model might be learning from synthetic nonsense token patterns that don’t correspond to real language.
+
+2. CNNs rely on spatial/token sequence patterns
+CNNs expect meaningful local patterns in the token sequences (like word n-grams).
+
+SMOTE might create input sequences that break these patterns, leading to poor learning.
+
+Random oversampling just repeats valid real sequences, so while it can cause overfitting, at least it feeds the model valid inputs.
+
+3. Better with semantic representations (like embeddings)
+If you applied SMOTE to TF-IDF vectors or sentence embeddings, it would likely work better.
+
+For token IDs or CNNs, random oversampling is often safer.
+
+Recommendations:
+Stick with random oversampling for token-level CNN input.
+
+If you really want to use SMOTE:
+
+Use it on sentence embeddings (e.g., from sentence-transformers) instead of token IDs.
+
+Train a fully connected model on those embeddings.
+
+Try data augmentation for text instead:
+
+Back-translation (you tried this)
+
+EDA: Synonym replacement, random swap/insertion/deletion
+
+MixUp on embeddings
